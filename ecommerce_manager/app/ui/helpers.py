@@ -25,6 +25,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QAbstractItemView,
     QPushButton,
+    QSizePolicy,
     QTableWidget,
     QTableWidgetItem,
     QTextEdit,
@@ -119,8 +120,14 @@ def configure_table(table: QTableWidget, headers: Sequence[str]) -> None:
     table.setAlternatingRowColors(True)
     table.setSelectionBehavior(QAbstractItemView.SelectRows)
     table.setSelectionMode(QAbstractItemView.SingleSelection)
+    table.setWordWrap(False)
+    table.setMinimumHeight(220)
+    table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.MinimumExpanding)
+    table.verticalHeader().setDefaultSectionSize(32)
+    table.horizontalHeader().setMinimumSectionSize(90)
+    table.horizontalHeader().setDefaultSectionSize(150)
     table.horizontalHeader().setStretchLastSection(True)
-    table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+    table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
 
 
 def set_table_rows(table: QTableWidget, rows: Iterable[Sequence[Any]]) -> None:
@@ -157,19 +164,24 @@ class MetricCard(QFrame):
     def __init__(self, title: str, value: str = "", subtitle: str = "", parent: QWidget | None = None):
         super().__init__(parent)
         self.setObjectName("MetricCard")
+        self.setMinimumSize(180, 104)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.title_label = QLabel(title)
         self.title_label.setObjectName("MetricCardTitle")
         self.value_label = QLabel(value)
         self.value_label.setObjectName("MetricCardValue")
+        self.value_label.setMinimumHeight(34)
         self.subtitle_label = QLabel(subtitle)
         self.subtitle_label.setObjectName("MutedLabel")
         self.subtitle_label.setWordWrap(True)
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(14, 12, 14, 12)
+        layout.setContentsMargins(16, 14, 16, 14)
+        layout.setSpacing(6)
         layout.addWidget(self.title_label)
         layout.addWidget(self.value_label)
         if subtitle:
             layout.addWidget(self.subtitle_label)
+        layout.addStretch(1)
 
     def set_value(self, value: Any, *, negative: bool = False) -> None:
         self.value_label.setText(str(value))
@@ -181,10 +193,12 @@ class MetricCard(QFrame):
 class SectionHeader(QWidget):
     def __init__(self, title: str, description: str = "", parent: QWidget | None = None):
         super().__init__(parent)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         title_label = QLabel(title)
         title_label.setObjectName("SectionTitle")
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 12, 0, 4)
+        layout.setContentsMargins(0, 14, 0, 4)
+        layout.setSpacing(3)
         layout.addWidget(title_label)
         if description:
             desc = QLabel(description)
@@ -270,10 +284,17 @@ class DateRangeFilter(QWidget):
 
 def grid_cards(cards: Sequence[MetricCard], columns: int = 4) -> QGridLayout:
     grid = QGridLayout()
-    grid.setHorizontalSpacing(10)
-    grid.setVerticalSpacing(10)
+    grid.setContentsMargins(0, 0, 0, 0)
+    grid.setHorizontalSpacing(12)
+    grid.setVerticalSpacing(12)
     for idx, card in enumerate(cards):
+        card.setMinimumSize(180, 104)
         grid.addWidget(card, idx // columns, idx % columns)
+    rows = (len(cards) + columns - 1) // columns
+    for row in range(rows):
+        grid.setRowMinimumHeight(row, 108)
+    for col in range(columns):
+        grid.setColumnStretch(col, 1)
     return grid
 
 

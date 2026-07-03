@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from PySide6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QTableWidget, QVBoxLayout
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QSizePolicy, QTableWidget, QVBoxLayout, QWidget
 
 from ..services.products_service import ProductsService
 from ..services.reports_service import ReportsService
@@ -17,7 +17,6 @@ from .helpers import (
     money_text,
     rate_text,
     set_table_rows,
-    to_qdate,
 )
 
 
@@ -67,6 +66,20 @@ class DashboardView(BaseView):
         )
         self.audit_table = QTableWidget()
         configure_table(self.audit_table, ["Audit check", "Count"])
+        for table in (
+            self.top_table,
+            self.low_margin_table,
+            self.stock_table,
+            self.restock_table,
+        ):
+            table.setMinimumHeight(240)
+        self.audit_table.setMinimumHeight(280)
+
+        metric_grid = QWidget()
+        metric_grid.setObjectName("MetricGrid")
+        metric_grid.setMinimumHeight(228)
+        metric_grid.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        metric_grid.setLayout(grid_cards(list(self.metric_cards.values()), columns=4))
 
         controls = QHBoxLayout()
         controls.addWidget(self.date_range)
@@ -74,9 +87,11 @@ class DashboardView(BaseView):
         controls.addStretch(1)
 
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(10)
         layout.addLayout(controls)
         layout.addWidget(self.note)
-        layout.addLayout(grid_cards(list(self.metric_cards.values()), columns=4))
+        layout.addWidget(metric_grid)
         layout.addWidget(SectionHeader("Top listings by profit"))
         layout.addWidget(self.top_table)
         layout.addWidget(SectionHeader("Low margin / losing listings", "Rows appear when profit is negative or margin is below 5%."))

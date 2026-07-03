@@ -6,6 +6,8 @@ from PySide6.QtWidgets import (
     QLabel,
     QMainWindow,
     QPushButton,
+    QScrollArea,
+    QSizePolicy,
     QStackedWidget,
     QVBoxLayout,
     QWidget,
@@ -40,11 +42,28 @@ class PageShell(QWidget):
         title_block.addWidget(description_label)
         header.addLayout(title_block, 1)
 
+        content.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.MinimumExpanding)
+        content_wrapper = QWidget()
+        content_wrapper.setObjectName("PageScrollBody")
+        content_wrapper.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.MinimumExpanding)
+        content_layout = QVBoxLayout(content_wrapper)
+        content_layout.setContentsMargins(0, 0, 12, 18)
+        content_layout.setSpacing(0)
+        content_layout.addWidget(content)
+        content_layout.addStretch(1)
+
+        scroll_area = QScrollArea()
+        scroll_area.setObjectName("PageScrollArea")
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setFrameShape(QFrame.NoFrame)
+        scroll_area.setWidget(content_wrapper)
+        scroll_area.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
         layout = QVBoxLayout(self)
         layout.setContentsMargins(18, 16, 18, 16)
         layout.setSpacing(12)
         layout.addLayout(header)
-        layout.addWidget(content, 1)
+        layout.addWidget(scroll_area, 1)
 
 
 class MainWindow(QMainWindow):

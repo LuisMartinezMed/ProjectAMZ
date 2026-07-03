@@ -8,8 +8,8 @@ QMainWindow, QWidget {
     font-size: 13px;
 }
 QFrame#Sidebar {
-    background: #151b22;
-    border-right: 1px solid #26313c;
+    background: #121922;
+    border-right: 1px solid #2c3a48;
 }
 QPushButton {
     background: #26313c;
@@ -30,12 +30,15 @@ QPushButton#NavButton {
     border: 0;
     background: transparent;
     padding: 10px 12px;
+    border-radius: 7px;
 }
 QPushButton#NavButton:hover {
-    background: #202a34;
+    background: #202c37;
 }
 QPushButton#NavButton:checked {
-    background: #2d5f8a;
+    background: #2f6f9f;
+    color: #ffffff;
+    font-weight: 700;
 }
 QLabel#AppTitle {
     font-size: 18px;
@@ -53,9 +56,10 @@ QLabel#SectionTitle {
     font-weight: 700;
 }
 QFrame#MetricCard {
-    background: #171e26;
-    border: 1px solid #2a3541;
+    background: #18212b;
+    border: 1px solid #334354;
     border-radius: 8px;
+    min-height: 96px;
 }
 QLabel#MetricCardTitle {
     color: #a9b7c4;
@@ -113,15 +117,53 @@ QTableWidget {
     border: 1px solid #26313c;
     border-radius: 6px;
 }
+QTableWidget::item {
+    padding: 6px;
+}
 QHeaderView::section {
     background: #1c2630;
     color: #dce5ee;
-    padding: 7px;
+    padding: 8px;
     border: 0;
     border-right: 1px solid #2a3541;
     font-weight: 700;
 }
-QScrollArea {
+QScrollArea, QScrollArea > QWidget > QWidget {
     border: 0;
+    background: #101418;
+}
+QScrollBar:vertical {
+    background: #101418;
+    width: 12px;
+    margin: 0;
+}
+QScrollBar::handle:vertical {
+    background: #344657;
+    border-radius: 6px;
+    min-height: 32px;
+}
+QScrollBar::handle:vertical:hover {
+    background: #426075;
+}
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0;
+}
+QScrollBar:horizontal {
+    background: #101418;
+    height: 12px;
+    margin: 0;
+}
+QScrollBar::handle:horizontal {
+    background: #344657;
+    border-radius: 6px;
+    min-width: 32px;
+}
+QScrollBar::handle:horizontal:hover {
+    background: #426075;
+}
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    width: 0;
 }
 """
